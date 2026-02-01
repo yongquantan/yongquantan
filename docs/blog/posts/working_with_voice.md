@@ -3,7 +3,7 @@ title: "Working with Voice AI is Easy, Try This"
 date: 2025-05-10
 description: "A quick guide to working with voice AI"
 categories:
-  - LLM
+  - AI
   - Voice
 authors:
   - yongquantan

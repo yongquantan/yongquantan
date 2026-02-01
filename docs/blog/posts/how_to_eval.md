@@ -3,7 +3,7 @@ title: "How to perform LLM Evals"
 date: 2025-08-01
 description: "Evals are pretty simple really"
 categories:
-  - LLM
+  - AI
   - Voice
 authors:
   - yongquantan

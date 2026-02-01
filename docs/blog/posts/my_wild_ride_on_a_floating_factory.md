@@ -3,7 +3,7 @@ title: "My Wild Ride on a Floating Factory"
 date: 2025-01-27
 description: "Personal learnings while onboard the largest oil extraction vessel"
 categories:
-  - personal musings
+  - Personal
 authors:
   - yongquantan
 ---
