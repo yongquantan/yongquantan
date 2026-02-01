@@ -35,6 +35,8 @@ In practice, the failure pattern looked like this:
 - Each error triggers more tool calls
 - Eventually the agent locks into a local loop and burns tokens
 
+In my case, giving `claude-haiku-4-5-20251001` 5 unoptimized tools and a step budget of 150 meant that it'd constantly churn through steps, calling tools repeatedly without clear progress, often spiraling into loops until the entire budget was exhausted.
+
 We needed a way to apply pressure back onto the subagent so it would only spend what it could justify.
 
 ## Backpressure lever 1: reduce tool calls
