@@ -152,3 +152,6 @@ If you're ready to start building evals for your own LLM pipeline: pick one conv
 
 The best eval is the one you actually run. Don't wait for the perfect setup—start measuring what matters and iterate from there.
 
+---
+
+--8<-- "snippets/cta.md"

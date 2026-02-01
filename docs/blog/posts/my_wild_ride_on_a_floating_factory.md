@@ -81,3 +81,7 @@ I can't share all the details of how I ended up here, but it's been an opportuni
 
 
 ![Howl's Moving Castle GIF](./assets/howls_moving_castle.gif)
+
+---
+
+--8<-- "snippets/cta.md"

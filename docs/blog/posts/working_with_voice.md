@@ -177,3 +177,7 @@ If you're planning to work with industry-specific terms, using `wer` is a good s
 Working with Voice AI can seem daunting at first, so it's important to start with basic flows first and build up to more complexity. Structuring outputs & using evals can be a solid foundation for more advanced workflows, which I hope to cover in the next article.
 
 The code used in this article can be found in my [Working with Voice](https://github.com/hermit46/working-with-voice) repo
+
+---
+
+--8<-- "snippets/cta.md"

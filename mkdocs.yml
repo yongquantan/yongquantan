@@ -14,10 +14,12 @@ theme:
 markdown_extensions:
   - admonition
   - pymdownx.details
+  - pymdownx.snippets:
+      base_path: docs
   - pymdownx.superfences
 
 nav:
-  - About Me: index.md
+  - Home: index.md
   - Blog: blog/index.md
 
 plugins:

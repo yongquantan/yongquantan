@@ -128,3 +128,7 @@ This doesn't just reduce costs. It improves the *shape* of subagent behavior.
 If you run subagents in production, add a tool call budget and a single-line recovery hint to errors. You'll feel the improvement immediately.
 
 Backpressure is the simplest way I've found to make subagents behave like senior engineers instead of infinite interns.
+
+---
+
+--8<-- "snippets/cta.md"
