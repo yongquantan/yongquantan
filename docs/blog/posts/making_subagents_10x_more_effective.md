@@ -1,6 +1,6 @@
 ---
 title: "Backpressure: making subagents 10x more effective"
-date: 2025-10-01
+date: 2026-02-01
 description: "Backpressure is the simplest lever I've found to stop subagents from going runaway."
 categories:
   - AI
@@ -12,11 +12,13 @@ Subagents are great at exploring, but terrible at stopping. If you've ever spun 
 
 The fix isn't more prompts. It's backpressure.
 
-In this article, I'll walk through how I made subagents roughly **10x more effective** by applying three backpressure levers:
+In this article, I'll walk through how I made subagents roughly **10x more effective** by applying three levers:
 
 - Reduce tool calls without hurting accuracy
 - Enrich error logs so agents recover faster
 - Minimize total steps before they go runaway
+
+With reference to projects I've worked on, you'll get to learn what it takes to evolve a subagent out-of-the-box to to a successful, token-efficient one.
 
 <!-- more -->
 
@@ -28,9 +30,10 @@ Most subagents are designed to be helpful, which often translates to "do everyth
 - Long-running tasks with branching paths
 - Latency-sensitive workflows
 
-In practice, the failure pattern looked like this:
+In practice, my failure patterns look like this:
 
-- A subagent calls tools in a loop because it isn't sure
+- A subagent shares a brief plan of what they'll do
+- It then calls tools in a loop because it isn't sure
 - Errors are returned, but with no guidance to recover
 - Each error triggers more tool calls
 - Eventually the agent locks into a local loop and burns tokens
@@ -39,21 +42,19 @@ In my case, giving `claude-haiku-4-5-20251001` 5 unoptimized tools and a step bu
 
 We needed a way to apply pressure back onto the subagent so it would only spend what it could justify.
 
-## Backpressure lever 1: reduce tool calls
+## Lever 1: Curate the Tool Belt
 
 First, I treated tool calls like a scarce resource. If the agent calls a tool, it needs to be worth it.
 
 ### Strategy
 
 - **Plan before calling tools.** Require a short plan (2-4 steps) and a clear success criterion.
-- **Batch calls when possible.** If two tools can be used in one pass, prefer a single pass with richer input.
-- **Cache obvious queries.** If the same search or file is used twice, reuse the result.
-
-### Result
+- **Cache obvious queries.** If the same search/file/config exists, reuse the result. 
+    - Note: this doesn't necessarily mean "use Redis"; it simply means scaffolding the agent's trajectory based on patterns that already work/ have been observed. 
 
 I saw tool call counts drop by 50-80% depending on task. But the bigger effect was *behavioral*: the agent stopped fishing and started reasoning.
 
-## Backpressure lever 2: enrich error logs
+## Lever 2: Enrich their Error Logs
 
 Errors are only useful if they help recovery. Most tool errors are raw, unhelpful, and force the agent to guess the fix.
 
@@ -81,19 +82,19 @@ Hint: reduce result size or tighten query
 
 This single change reduced loops after failures by about 3x in my tests.
 
-## Backpressure lever 3: minimize total steps
+## Lever 3: Minimize total step budget
 
-Even with fewer tool calls and better errors, subagents still drift when tasks take too many steps. The longer the chain, the higher the chance of drifting off the original goal.
+Even with fewer tool calls and better errors, subagents still drift when tasks take too many steps. The longer the chain, the higher the chance of drifting off the original goal. Typically if your step budget exceeds 20-30 for a mid-complex task like web scraping, you'll know there's space for optimization.
 
-### Strategy
+### What this looks like
 
 - **Set a step budget.** Hard limit for tool calls or reasoning steps per task.
-- **Early exit when confidence is high.** If confidence crosses a threshold, stop.
-- **Escalate to human or parent agent.** When the budget is hit, return a partial result and ask for guidance.
+- **Early exit when confidence is high.** If confidence crosses a threshold, stop. This has to be encoded in your tool calls
+- **Escalate to human or parent agent.** When the budget is hit, return a partial result and ask for guidance. This can be as simple as ensuring your schemas encode partial success and saving the entire agent trace.
 
-### Result
+### The Art & Science
 
-With a step cap in place, success rates went up because failures were caught early rather than compounding. The parent agent could then decide whether to retry with new constraints.
+Any effective subagent needs to really know their problem (and decision) space, as exemplified by the existence of web search & agentic search (RAG, BM25) tools. At the same time, maximizing your intelligence per token (i.e. Token Factor Productivity) is important too. Setting constraints upfront really forces you to think through what steps you'll take to keep your agent directed and token-efficient -- a key factor that separates toy projects from production tooling.
 
 ## Putting it together: a simple backpressure policy
 
@@ -120,7 +121,7 @@ This doesn't just reduce costs. It improves the *shape* of subagent behavior.
 
 - Treat tool calls as scarce resources, not free actions
 - Enrich errors with hints so recovery is deliberate
-- Cap steps to prevent runaway loops
+- Cap step budget to prevent runaway loops
 - Backpressure is a policy, not a prompt
 
 ## Start Today
