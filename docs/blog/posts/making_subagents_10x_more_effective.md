@@ -52,6 +52,8 @@ First, I treated tool calls like a scarce resource. If the agent calls a tool, i
 - **Cache obvious queries.** If the same search/file/config exists, reuse the result. 
     - Note: this doesn't necessarily mean "use Redis"; it simply means scaffolding the agent's trajectory based on patterns that already work/ have been observed. 
 
+What this looked like in my projects: I would simply figure out what the agent needed to do (think: instead of 'tools to call', consider 'jobs to do'), and figure out a way to tighten the loop. Originally, the tool belt had 5 tools (2 read-based ones, and 3 write-based ones). By enforcing clarity, I was able to deduce that 2 tools (one write, one read) was sufficient for its task.
+
 I saw tool call counts drop by 50-80% depending on task. But the bigger effect was *behavioral*: the agent stopped fishing and started reasoning.
 
 ## Lever 2: Enrich their Error Logs
@@ -84,7 +86,7 @@ This single change reduced loops after failures by about 3x in my tests.
 
 ## Lever 3: Minimize total step budget
 
-Even with fewer tool calls and better errors, subagents still drift when tasks take too many steps. The longer the chain, the higher the chance of drifting off the original goal. Typically if your step budget exceeds 20-30 for a mid-complex task like web scraping, you'll know there's space for optimization.
+Even with a smaller tool belt and better errors, subagents still drift when tasks take too many steps. The longer the chain, the higher the chance of drifting off the original goal. Typically if your step budget exceeds 20-30 for a mid-complex task like web scraping, you'll know there's space for optimization.
 
 ### What this looks like
 
